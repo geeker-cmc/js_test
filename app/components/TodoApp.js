@@ -1,44 +1,50 @@
-import React from "react";
+import React,{Component} from 'react';
+import TodoList from './TodoList';
 
-import TodoList from "./TodoList.js";
-
-class TodoApp extends React.Component {
+export default class TodoApp extends Component{
   constructor(props) {
-
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {items: [], text: ''};
-    console.log(this);
-  }
-
-  render() {
-    return (
-      <div>
-        <h3>TODO</h3>
-        <TodoList items={this.state.items} />
-        <form onSubmit={this.handleSubmit}>
-          <input onChange={this.handleChange} value={this.state.text} />
-          <button>{'Add #' + (this.state.items.length + 1)}</button>
-        </form>
-      </div>
-    );
-  }
-
-  handleChange(e) {
-    this.setState({text: e.target.value});
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    var newItem = {
-      text: this.state.text,
-      id: Date.now()
+  
+    this.state = {
+      items:[],
+      text:''
     };
-    this.setState((prevState) => ({
-      items: prevState.items.concat(newItem),
-      text: ''
-    }));
+  }
+  handleSubmit(e){
+    e.preventDefault();
+    this.setState((prevState)=>{
+      let newItem={
+        text:this.state.text,
+        id:Date.now()
+      }
+      return {
+        items:prevState.items.concat(newItem),
+        text:''
+      }
+    })
+  }
+  handleChange(e){
+    this.setState({
+      text:e.target.value
+    })
+  }
+  deleChild(itemKey){
+    let temp=this.state.items.filter((item)=>item.id!=itemKey);
+    this.setState({
+      items:temp
+    })
+  }
+  render(){
+    return (
+          <div>
+            <h3>todo</h3>
+            <TodoList deleChild={this.deleChild.bind(this)} items={this.state.items} />
+            <form onSubmit={this.handleSubmit.bind(this)}>
+            <input type="text" onChange={this.handleChange.bind(this)} value={this.state.text}/>
+               <button>{'#'+(this.state.items.length)}</button>
+            </form>
+           
+          </div>
+      )
   }
 }
-module.exports=TodoApp;
